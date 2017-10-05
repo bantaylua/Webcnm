@@ -13,13 +13,15 @@ var nodemailer=require('nodemailer');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var admin = require('./routes/admin');
+var webhook= require('./routes/webhook');
 
 var passport=require('passport');
 var LocalStrategy=require('passport-local').Strategy;
 
 
 //Set up default mongoose connection
-var mongoDB = 'mongodb://thanh:thanh@ds047305.mlab.com:47305/projectse';
+//var mongoDB = 'mongodb://thanh:thanh@ds047305.mlab.com:47305/projectse';
+var mongoDB = 'mongodb://thamtushinichi:Nhox_mikon789@ds141434.mlab.com:41434/cowbuffalodb';
 mongoose.connect(mongoDB);
 
 //Get the default connection
@@ -46,6 +48,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(flash());
+
+app.use('/webhook',webhook);
 
 Handlebars.registerHelper('if_eq', function(a, b, opts) {
     if(a == b) // Or === depending on your needs
@@ -191,6 +195,7 @@ passport.use('login',new LocalStrategy({
 
 app.use('/', index);
 
+
 app.use(function (req, res, next) {
     if (req.isAuthenticated() && req.user.role_id!=0) {
         next();
@@ -217,6 +222,7 @@ app.use(function (req, res, next) {
 
 
 app.use('/admin', admin);
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

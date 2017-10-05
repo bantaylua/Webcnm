@@ -3,6 +3,7 @@
 var productModel = require('../model/product');
 var categoryModel= require('../model/category');
 var publisherModel= require('../model/publisher');
+var promise =require('promise');
 var async=require('async');
 // Upload file setting
 var multer	=require('multer');
@@ -104,33 +105,41 @@ exports.addproductpost= function (req, res,next){
 };
 exports.addproductimage = function (req,res,next) {
     var productName= req.params.productName;
-    upload(req,res,function (err) {
-        if(err)
-        {
-            console.log(err);
-
-            return;
-        }
-
-        productModel.findOne({'product_name': productName},function (err,product) {
+    var data=req.body.dataFile[0].url;
+    console.log(data);
+    var xuly= new promise(function (resolve,reject) {
+        upload(req,res,function (err) {
             if(err)
             {
                 console.log(err);
 
                 return;
             }
-            var updateProduct=product;
-            if(!req.file)
-            {
-                res.render('product_Admin/productpage',{layout:'layoutadmin'});
-                return;
-            }
-                updateProduct.product_image="/images/product/"+req.file.filename;
-                updateProduct.save();
-                res.render('product_Admin/productpage',{layout:'layoutadmin'});
-        });
 
+            productModel.findOne({'product_name': productName},function (err,product) {
+                if(err)
+                {
+                    console.log(err);
+
+                    return;
+                }
+                var updateProduct=product;
+                // if(!req.file)
+                // {
+                //     res.render('product_Admin/productpage',{layout:'layoutadmin'});
+                //     return;
+                // }
+               // updateProduct.product_image="/images/product/"+req.file.filename;
+                updateProduct.product_image=data;
+                updateProduct.save();
+                res.json({success : "Add Successfully", status : 200});
+                return;
+                //res.render('product_Admin/productpage',{layout:'layoutadmin'});
+            });
+
+        });
     });
+
 };
 exports.deleteProduct=function (req,res,next) {
     var product_id=req.params.id;
