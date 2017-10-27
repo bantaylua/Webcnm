@@ -22,13 +22,16 @@ var LocalStrategy=require('passport-local').Strategy;
 //Set up default mongoose connection
 //var mongoDB = 'mongodb://thanh:thanh@ds047305.mlab.com:47305/projectse';
 var mongoDB = 'mongodb://thamtushinichi:Nhox_mikon789@ds141434.mlab.com:41434/cowbuffalodb';
-mongoose.connect(mongoDB);
+var promise = mongoose.connect(mongoDB, {
+	useMongoClient: true,
+});
+
 
 //Get the default connection
-var db = mongoose.connection;
+var db1 = mongoose.connection;
 
 //Bind connection to error event (to get notification of connection errors)
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db1.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 var app = express();
 
